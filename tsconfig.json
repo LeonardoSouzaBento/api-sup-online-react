@@ -11,6 +11,6 @@
     "noUnusedLocals": true // Sinaliza quando há variáveis declaradas e não utilizadas
   },
   "compileOnSave": true,
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/index.ts"],
   "exclude": ["**/*.spec.ts"]
 }

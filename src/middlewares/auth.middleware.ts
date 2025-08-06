@@ -4,14 +4,13 @@ import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { UserService } from "../services/user.service";
 import { ForbiddenError } from "../errors/forbidden.error";
 
-export const auth = (app: express.Express) => {
+export const authMiddleware = (app: express.Express) => {
   app.use(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization?.split("Bearer ")[1];
     if (
       req.method === "POST" &&
       (req.url.startsWith("/auth/login") ||
-        req.url.startsWith("/auth/recovery") ||
-        req.url.startsWith("/auth/login-google"))
+        req.url.startsWith("/auth/recovery"))
     ) {
       return next();
     } else if (token) {
