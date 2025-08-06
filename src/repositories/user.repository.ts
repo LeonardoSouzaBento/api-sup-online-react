@@ -33,6 +33,7 @@ export class UserRepository {
     if (!user.id) {
       throw new Error("ID do usuário não pode ser nulo.");
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { senha, ...userWithoutPassword } = user;
     await this.collection
       .doc(user.id)

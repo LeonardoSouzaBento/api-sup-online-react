@@ -9,8 +9,8 @@ export const authMiddleware = (app: express.Express) => {
     const token = req.headers.authorization?.split("Bearer ")[1];
     if (
       req.method === "POST" &&
-      (req.url.startsWith("/auth/login") ||
-        req.url.startsWith("/auth/recovery"))
+      (req.url.endsWith("/auth/login") ||
+        req.url.endsWith("/auth/recovery"))
     ) {
       return next();
     } else if (token) {
@@ -25,7 +25,7 @@ export const authMiddleware = (app: express.Express) => {
         }
         req.user = user;
         return next();
-      } catch (error) {
+      } catch {
         next(new UnauthorizedError());
       }
     }

@@ -21,7 +21,7 @@ export class AuthController {
     const user = req.user; // já preenchido por auth.middleware
     try {
       await new UserService().getById(user.id);
-    } catch (e) {
+    } catch {
       const novoUsuario: User = {
         id: user.id,
         email: user.email,

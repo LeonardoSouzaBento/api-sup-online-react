@@ -8,21 +8,21 @@ export class CompaniesController {
   }
 
   static async getById(req: Request, res: Response) {
-    let companyId = req.params.id;
+    const companyId = req.params.id;
     res.send(await new CompaniesService().getById(companyId));
   }
 
   //salvar usúario
   static async save(req: Request, res: Response) {
-    let company = req.body as Company;
+    const company = req.body as Company;
     await new CompaniesService().save(company);
     res.send({ mensage: "Empresa cadastrada com sucesso" });
   }
 
   //editar usuário
   static async edit(req: Request, res: Response) {
-    let companyId = req.params.id;
-    let company = req.body as Company;
+    const companyId = req.params.id;
+    const company = req.body as Company;
     await new CompaniesService().update(companyId, company);
     res.send({ message: "Empresa atualizada com sucesso" });
   }
