@@ -1,4 +1,4 @@
-import express from 'express'
+import express from "express";
 import { routes } from "./routes/index";
 import { initializeApp } from "firebase-admin/app";
 import { initializeApp as initializeAppFirebase } from "firebase/app";
@@ -9,7 +9,6 @@ import { errors as celebrateErrors } from "celebrate";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import cors from "cors";
 import * as functions from "firebase-functions";
-
 
 initializeAppFirebase({
   apiKey: process.env.API_KEY,
@@ -23,10 +22,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin:'*',
+    origin: "https://supermercadodobom.netlify.app",
     credentials: true,
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

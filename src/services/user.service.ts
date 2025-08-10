@@ -31,11 +31,24 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async saveFromGoogle(user: User): Promise<void> {
+  async saveFromGoogle(user: { id: string; email: string; nome: string }): Promise<User> {
     if (!user.id) {
       throw new Error("ID do usuário não pode ser nulo.");
     }
-    await this.userRepository.save(user);
+    if (!user.email) {
+      throw new Error("Email do usuário não pode ser nulo");
+    }
+    if (!user.nome) {
+      throw new Error("Nome do usuário não pode ser nulo");
+    }
+    const newUser: User = {
+      id: user.id,
+      email: user.email,
+      nome: user.nome,
+      senha: "", // Senha para usuários do Google não é necessária
+    };
+    await this.userRepository.save(newUser);
+    return newUser;
   }
 
   async update(id: string, user: User): Promise<void> {

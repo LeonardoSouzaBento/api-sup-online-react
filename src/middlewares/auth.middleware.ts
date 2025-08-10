@@ -2,33 +2,63 @@ import express, { NextFunction, Response, Request } from "express";
 import { UnauthorizedError } from "../errors/unauthorized.error";
 import { DecodedIdToken, getAuth } from "firebase-admin/auth";
 import { UserService } from "../services/user.service";
-import { ForbiddenError } from "../errors/forbidden.error";
+import { User } from "../models/user.model";
 
 export const authMiddleware = (app: express.Express) => {
   app.use(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split("Bearer ")[1];
+    // Permitir algumas rotas
     if (
       req.method === "POST" &&
-      (req.url.endsWith("/auth/login") ||
-        req.url.endsWith("/auth/recovery"))
+      (req.url.endsWith("/auth/login") || req.url.endsWith("/auth/recovery"))
     ) {
       return next();
-    } else if (token) {
-      try {
-        const decodeIdToken: DecodedIdToken = await getAuth().verifyIdToken(
-          token,
-          false
-        );
-        const user = await new UserService().getById(decodeIdToken.uid);
-        if (!user) {
-          return next(new ForbiddenError());
-        }
-        req.user = user;
-        return next();
-      } catch {
-        next(new UnauthorizedError());
-      }
     }
-    next(new UnauthorizedError());
+
+    const token = req.headers.authorization?.split("Bearer ")[1];
+
+    if (!token) {
+      return res.status(401).send({ message: "Token não fornecido" });
+    }
+
+    try {
+      const decodedIdToken: DecodedIdToken = await getAuth().verifyIdToken(token);
+      const userService = new UserService();
+      const user = await userService.getById(decodedIdToken.uid);
+
+      if (!user) {
+        const newUser = await createUserFromLoginGoogle(decodedIdToken.uid, res);
+        if (!newUser) return; // a resposta já foi enviada em caso de erro
+        req.user = newUser;
+        return next();
+      }
+
+      req.user = user;
+      return next();
+    } catch {
+      return next(new UnauthorizedError());
+    }
   });
 };
+
+// função auxiliar para criar usuário do Google
+async function createUserFromLoginGoogle(
+  uid: string,
+  res: Response
+): Promise<User | null> {
+  try {
+    const googleUser = await getAuth().getUser(uid);
+
+    const userService = new UserService();
+    const user = await userService.saveFromGoogle({
+      id: googleUser.uid,
+      email: googleUser.email || "",
+      nome: googleUser.displayName || "Sem Nome",
+    });
+
+    return user;
+  } catch (error) {
+    console.error("Erro ao criar usuário do Google:", error);
+    res.status(500).send({ message: "Erro ao criar usuário do Google" });
+    return null;
+  }
+}
