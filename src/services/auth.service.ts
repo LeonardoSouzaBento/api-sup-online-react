@@ -56,7 +56,13 @@ export class AuthService {
       email,
       senha
     ).catch((err) => {
-      if (err.code === "auth/invalid-credential") {
+      const authErrors = [
+        "auth/invalid-credential",
+        "auth/user-not-found",
+        "auth/wrong-password",
+        "auth/invalid-email",
+      ];
+      if (authErrors.includes(err.code)) {
         throw new UnauthorizedError();
       }
       throw err;
@@ -66,5 +72,4 @@ export class AuthService {
   async recovery(email: string) {
     await sendPasswordResetEmail(getFirebaseAuth(), email);
   }
-
 }

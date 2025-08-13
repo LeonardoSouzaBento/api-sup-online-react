@@ -1,5 +1,5 @@
 import express from "express";
-import { routes } from "./routes/index";
+import { routes } from "./routes/routes";
 import { initializeApp } from "firebase-admin/app";
 import { initializeApp as initializeAppFirebase } from "firebase/app";
 import "dotenv/config";
@@ -22,7 +22,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://supermercadodobom.netlify.app",
+    origin: [
+      "https://supermercadodobom.netlify.app",
+      "http://127.0.0.1:5001/api-supermercado-do-bom/us-central1/api/auth/login",
+    ],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
