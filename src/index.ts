@@ -27,7 +27,7 @@ app.use(
       "http://127.0.0.1:5001/api-supermercado-do-bom/us-central1/api/auth/login",
     ],
     credentials: true,
-    methods: ["GET", "POST", "OPTIONS"],
+    methods: ["GET", "POST", "OPTIONS", "PUT"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );

@@ -26,3 +26,5 @@ userRoutes.put(
   }),
   asyncHandler(UsersController.editUser)
 );
+
+userRoutes.put("/users/update-address", asyncHandler(UsersController.updateAddress))

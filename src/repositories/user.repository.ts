@@ -63,4 +63,18 @@ export class UserRepository {
     }
     await docRef.delete();
   }
+
+  async updateAddress(user: User): Promise<void> {
+    const docRef = this.collection.doc(user.id);
+    if ((await docRef.get()).exists) {
+      await docRef.set(
+        {
+          endereco: user.endereco,
+        },
+        { merge: true }
+      );
+    } else {
+      throw new Error("Usuário não encontrado.");
+    }
+  }
 }

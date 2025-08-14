@@ -5,6 +5,18 @@ export type User = {
   nome: string;
   email: string;
   senha?: string
+  whatsapp?: string
+  telefone? : string
+  endereco?: {
+    rua: string,
+    numero: number,
+    complemento?: string,
+    bairro: string,
+    cidade: string,
+    estado: string,
+    lat: number,
+    lng: number,
+  }
 };
 
 export const updateUserSchema = Joi.object().keys({

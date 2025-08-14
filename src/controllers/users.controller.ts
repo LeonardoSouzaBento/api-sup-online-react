@@ -33,4 +33,17 @@ export class UsersController {
     await new UserService().update(userId, user);
     res.send({ message: "Usuário atualizado com sucesso" });
   }
+
+  static async updateAddress(req: Request, res: Response) {
+    const userId = req.user.id;
+    const endereco = req.body.endereco;
+
+    if (!endereco) {
+      res.status(400).json({ error: "O endereço é obrigatório" });
+    }
+
+    await new UserService().updateAddress(userId, endereco);
+
+    res.send({ message: "Endereço atualizado com sucesso" });
+  }
 }

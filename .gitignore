@@ -9,3 +9,4 @@ node_modules/
 /lib
 api-key-firebase.json
 .env
+firebase-debug.log

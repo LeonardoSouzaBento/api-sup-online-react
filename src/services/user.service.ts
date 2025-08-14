@@ -31,7 +31,11 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
-  async saveFromGoogle(user: { id: string; email: string; nome: string }): Promise<User> {
+  async saveFromGoogle(user: {
+    id: string;
+    email: string;
+    nome: string;
+  }): Promise<User> {
     if (!user.id) {
       throw new Error("ID do usuário não pode ser nulo.");
     }
@@ -66,5 +70,16 @@ export class UserService {
   async delete(id: string): Promise<void> {
     await this.userRepository.delete(id);
     await this.authService.delete(id);
+  }
+
+  async updateAddress(id: string, endereco: User["endereco"]): Promise<void> {
+    const _user = await this.userRepository.getById(id);
+
+    if (!_user) {
+      throw new NotFoundError("Usuário não encontrado!");
+    }
+
+    _user.endereco = endereco;
+    await this.userRepository.updateAddress(_user);
   }
 }
