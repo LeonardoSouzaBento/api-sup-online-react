@@ -9,7 +9,9 @@ export const authMiddleware = (app: express.Express) => {
     // Permitir algumas rotas
     if (
       req.method === "POST" &&
-      (req.url.endsWith("/auth/login") || req.url.endsWith("/auth/recovery"))
+      (req.url.startsWith("/auth-login-emil") ||
+        req.url.startsWith("/auth-recovery") ||
+        req.url.startsWith("/auth-login-anonymous"))
     ) {
       return next();
     }
@@ -21,17 +23,22 @@ export const authMiddleware = (app: express.Express) => {
     }
 
     try {
-      const decodedIdToken: DecodedIdToken = await getAuth().verifyIdToken(token);
+      const decodedIdToken: DecodedIdToken = await getAuth().verifyIdToken(
+        token
+      );
       const userService = new UserService();
       const user = await userService.getById(decodedIdToken.uid);
 
-      if (!user) {
-        const newUser = await createUserFromLoginGoogle(decodedIdToken.uid, res);
+      if (!user && req.url.startsWith("/auth-login-google")) {
+        const newUser = await createUserFromLoginGoogle(
+          decodedIdToken.uid,
+          res
+        );
         if (!newUser) return; // a resposta já foi enviada em caso de erro
         req.user = newUser;
         return next();
       }
-
+      
       req.user = user;
       return next();
     } catch {

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { UsersController } from "../controllers/users.controller";
 import asyncHandler from "express-async-handler";
 import { celebrate, Segments } from "celebrate";
-import { updateUserSchema, newUserSchema } from "../models/user.model";
+import { updateUserSchema, newUserSchema, updateAddressSchema } from "../models/user.model";
 
 export const userRoutes = Router();
 
@@ -19,6 +19,7 @@ userRoutes.post(
 );
 //
 userRoutes.delete("/users/:id", asyncHandler(UsersController.deleteUser));
+//
 userRoutes.put(
   "/users/:id",
   celebrate({
@@ -27,4 +28,11 @@ userRoutes.put(
   asyncHandler(UsersController.editUser)
 );
 
-userRoutes.put("/users/update-address", asyncHandler(UsersController.updateAddress))
+userRoutes.put(
+  "/user-update-address",
+  celebrate({
+    [Segments.BODY]: updateAddressSchema,
+  }),
+  asyncHandler(UsersController.updateAddress)
+);
+

@@ -5,9 +5,14 @@ import { celebrate, Segments } from "celebrate";
 import { authLoginSchema } from "../models/user.model";
 import { authRecoverySchema } from "../models/user.model";
 
+
 export const authRoutes = Router();
 authRoutes.post(
-  "/auth/login",
+  "/auth-login-anonymous", asyncHandler(AuthController.anonymousLogin)
+);
+
+authRoutes.post(
+  "/auth-login-email",
   celebrate({
     [Segments.BODY]: authLoginSchema,
   }),
@@ -15,13 +20,13 @@ authRoutes.post(
 );
 
 authRoutes.post(
-  "/auth/login-google",
+  "/auth-login-google",
   asyncHandler(AuthController.loginWithGoogle)
 );
 
 export const authRecovery = Router();
 authRoutes.post(
-  "/auth/recovery",
+  "/auth-recovery",
   celebrate({
     [Segments.BODY]: authRecoverySchema,
   }),

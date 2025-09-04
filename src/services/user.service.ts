@@ -31,6 +31,10 @@ export class UserService {
     await this.userRepository.save(user);
   }
 
+  async saveAnonymousUser(user: User): Promise<void> {
+    await this.userRepository.save(user);
+  }
+
   async saveFromGoogle(user: {
     id: string;
     email: string;
