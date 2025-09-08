@@ -2,13 +2,14 @@ import { Response, Request } from "express";
 import { AuthService } from "../services/auth.service";
 import { User } from "../models/user.model";
 import { UserService } from "../services/user.service";
-import { getAuth } from "firebase-admin/auth";
+// import { getAuth } from "firebase-admin/auth";
+import { auth } from "../firebase"; 
 
 export class AuthController {
   static async anonymousLogin(req: Request, res: Response) {
     try {
       // cria usuário anônimo no Firebase
-      const fbUser = await getAuth().createUser({
+      const fbUser = await auth.createUser({
         email: `anon_${Date.now()}@example.com`,
         password: Math.random().toString(36).slice(-8),
         displayName: "Usuário Anônimo",
@@ -23,14 +24,16 @@ export class AuthController {
       const userService = new UserService();
       await userService.saveAnonymousUser(user);
 
-      const token = await getAuth().createCustomToken(fbUser.uid);
+      const token = await auth.createCustomToken(fbUser.uid);
       res.send({ token });
+
     } catch (error) {
       console.error("Erro ao criar usuário anônimo:", error);
       res.status(500).send({ message: "Erro ao criar usuário anônimo" });
     }
   }
 
+  /*Verificar a necessidade de repetir o getIdToken no front-end*/
   static async login(req: Request, res: Response) {
     const { email, senha } = req.body;
     const useRecord = await new AuthService().login(email, senha);
